@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>サポート | US Tariff Lookup - 米国関税検索・計算</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Noto+Sans+JP:wght@300;400;500&family=Sora:wght@300;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0a1628;
+      --navy-mid: #112040;
+      --accent: #2d7dff;
+      --accent-bright: #4d9aff;
+      --gold: #f0a500;
+      --text: #e8edf5;
+      --text-muted: #7a90b0;
+      --border: rgba(45, 125, 255, 0.15);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(45,125,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45,125,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      top: -20%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(45,125,255,0.12) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    header { padding: 56px 0 48px; border-bottom: 1px solid var(--border); }
+    .app-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(45,125,255,0.1);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 14px;
+      margin-bottom: 28px;
+    }
+    .app-badge .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent-bright);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .app-badge span {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--accent-bright);
+      text-transform: uppercase;
+    }
+    h1 {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(26px, 5vw, 38px);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    h1 em { font-style: normal; color: var(--accent-bright); }
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.05em;
+      margin-top: 6px;
+    }
+    section { padding: 40px 0; border-bottom: 1px solid var(--border); }
+    section:last-of-type { border-bottom: none; }
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-family: 'Sora', sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    p { font-size: 15px; line-height: 1.8; color: #b0bfd0; margin-bottom: 12px; }
+    .faq-list { display: flex; flex-direction: column; gap: 16px; }
+    .faq-item {
+      background: var(--navy-mid);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 22px;
+      transition: border-color 0.2s;
+    }
+    .faq-item:hover { border-color: rgba(45,125,255,0.35); }
+    .faq-q {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .faq-q::before {
+      content: 'Q';
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--accent-bright);
+      background: rgba(45,125,255,0.15);
+      border-radius: 4px;
+      padding: 2px 6px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .faq-a { font-size: 14px; color: #8a9db8; line-height: 1.7; padding-left: 32px; }
+    .contact-card {
+      background: var(--navy-mid);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .contact-icon {
+      width: 48px; height: 48px;
+      background: rgba(45,125,255,0.12);
+      border: 1px solid rgba(45,125,255,0.25);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 22px;
+    }
+    .contact-info h3 { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .contact-info a {
+      color: var(--accent-bright);
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(77,154,255,0.3);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .contact-info a:hover { color: #fff; border-color: #fff; }
+    .contact-info .response-time { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+    .disclaimer-box {
+      background: rgba(240,165,0,0.06);
+      border: 1px solid rgba(240,165,0,0.2);
+      border-radius: 10px;
+      padding: 20px 22px;
+    }
+    .disclaimer-box p { font-size: 13px; color: #9a8a60; margin: 0; line-height: 1.7; }
+    footer { padding: 36px 0 48px; text-align: center; }
+    footer p { font-family: 'DM Mono', monospace; font-size: 11px; color: #3a5070; letter-spacing: 0.08em; margin: 0; }
+    @media (max-width: 480px) { .contact-card { flex-direction: column; align-items: flex-start; } }
+    .container > * { animation: fadeUp 0.6s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="app-badge"><span class="dot"></span><span>App Support</span></div>
+      <h1>US Tariff Lookup<br><em>米国関税検索・計算</em></h1>
+      <p class="subtitle">v1.0 &nbsp;/&nbsp; iOS Application</p>
+    </header>
+
+    <section>
+      <div class="section-label">Overview</div>
+      <h2>アプリについて</h2>
+      <p>US Tariff Lookup は、米国への輸入品に適用される関税率をすばやく検索・計算するための iOS アプリです。HTS コードの照会、Section 301 追加関税、IEEPA 関税などに対応しています。</p>
+      <p>This app allows users to quickly search and calculate U.S. import tariff rates, including HTS code lookup, Section 301 additional duties, and IEEPA tariffs.</p>
+    </section>
+
+    <section>
+      <div class="section-label">FAQ</div>
+      <h2>よくある質問</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <div class="faq-q">関税率のデータはいつ更新されますか？</div>
+          <div class="faq-a">アプリ内の関税率データは定期的に更新されます。最新の規制変更については、米国国際貿易委員会（USITC）の公式サイトもあわせてご確認ください。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">計算結果はどの程度正確ですか？</div>
+          <div class="faq-a">本アプリの情報は参考目的を目的としており、実際の通関申告や輸入手続きには必ず公式資料および専門家へのご確認をお勧めします。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">HTSコードが見つからない場合はどうすればよいですか？</div>
+          <div class="faq-a">検索キーワードを変えてお試しください。それでも見つからない場合はサポートまでご連絡ください。</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q">How accurate is the tariff data?</div>
+          <div class="faq-a">Tariff data is intended for reference purposes only. For official customs filings, please verify with official USITC sources or consult a licensed customs broker.</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-label">Contact</div>
+      <h2>サポートへのお問い合わせ</h2>
+      <div class="contact-card">
+        <div class="contact-icon">✉️</div>
+        <div class="contact-info">
+          <h3>メールでお問い合わせ</h3>
+          <a href="mailto:mobileone810@gmail.com">mobileone810@gmail.com</a>
+          <p class="response-time">通常 2〜3 営業日以内にご返信いたします</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-label">Disclaimer</div>
+      <h2>免責事項</h2>
+      <div class="disclaimer-box">
+        <p>本アプリが提供する関税情報は参考目的のみに使用されるものであり、正確性・完全性・最新性を保証するものではありません。実際の輸入通関手続きや法的判断については、税関当局または通関士等の専門家にご相談ください。The tariff information provided by this app is for reference purposes only and does not constitute legal or customs advice.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2026 US Tariff Lookup &nbsp;|&nbsp; iOS App Support Page</p>
+    </footer>
+  </div>
+</body>
+</html>
